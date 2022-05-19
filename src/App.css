@@ -10,26 +10,8 @@
   top: 0;
   width: 100%;
   height: 100%;
-  z-index: 1;
-  color: white;
-  /* background: rgb(0,0,0,0.7); */
-  font-size: 12px;
-  display:flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  background: #000;
-}
-
-.ascii > div {
-  display:flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  flex-basis: 1em;
-}
-
-.ascii > div > div{
-  overflow: hidden;
-  flex-basis: 1em;
+  background: white;
+  z-index: 2;
 }
 
 
@@ -39,8 +21,7 @@ canvas {
   top: 0;
   width: 5%;
   height: 5%;
-  z-index: 2;
-  border: 1px solid red;
+  z-index: 1;
 }
 
 .App-logo {
@@ -62,7 +43,6 @@ canvas {
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
-  opacity: 0.5;
   /* background: rgb(0,0,0,0.5); */
 }
 
