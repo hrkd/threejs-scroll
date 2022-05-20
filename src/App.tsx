@@ -77,29 +77,26 @@ function App() {
     resizeHandler();
     renderer.setClearColor(new THREE.Color(0x000000), 1);
     const wrapper = document.querySelector('#root');
+
+    //add ascii layer
     wrapper?.appendChild(effect.domElement);
     effect.domElement.setAttribute('class', 'ascii');
 
     window.addEventListener('resize', resizeHandler);
 
     const animate = () => {
-      // setTimeout(() => {
       requestAnimationFrame(animate);
-      // }, 1000 / 30);
       camera.position.z = window.innerHeight / 2 / Math.tan(((camera.fov / 2) * Math.PI) / 180.0);
 
       // renderer.render(scene, camera);
       effect.render(scene, camera);
-      // console.log(window.pixels);
-      // renderer.getContext().readPixels(0, 0, window.innerWidth/20, window.innerHeight/20, renderer.getContext().RGBA, renderer.getContext().UNSIGNED_BYTE, window.pixels);
-      // ascii.update();
     };
     animate();
   }, [ref]);
 
   return (
     <>
-      <canvas ref={ref}></canvas>
+      <canvas ref={ref}/>
       <div className="App" style={{ height: 10000 }}>
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
