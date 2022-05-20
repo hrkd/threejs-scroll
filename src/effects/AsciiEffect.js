@@ -192,7 +192,7 @@ class AsciiEffect {
 
 		// convert img element to ascii
 
-		function asciifyImage( oAscii ) {
+		function asciifyImage ( oAscii ) {
 
 			oCtx.clearRect( 0, 0, iWidth, iHeight );
 			oCtx.drawImage( oCanvasImg, 0, 0, iWidth, iHeight );
@@ -241,9 +241,13 @@ class AsciiEffect {
 					//strThisChar = fBrightness;
 
 					let className = "";
-					if (iCharIdx >= threshold - 1) className = 'dark';
+					let strThisChar = '&nbsp;';
+					if (iCharIdx >= threshold - 1) {
+					} else {
+						strThisChar = '<span>'+ aCharList[ iCharIdx ] + '</span>';
+					}
 
-					let strThisChar = '<span class="'+className+'">'+ aCharList[ iCharIdx ] + '</span>';
+					// let strThisChar = '<span class="'+className+'">'+ aCharList[ iCharIdx ] + '</span>';
 					// let strThisChar = aCharList[ iCharIdx ];
 
 					if ( strThisChar === undefined || strThisChar == ' ' )
@@ -277,6 +281,9 @@ class AsciiEffect {
 
 		}
 
+		this.updateThreshold = function(num) {
+			threshold = num;
+		}
 	}
 
 }

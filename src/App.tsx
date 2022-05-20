@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import * as THREE from 'three';
 import { AsciiEffect } from './effects/AsciiEffect';
+import GUI from 'lil-gui'; 
 
 function App() {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -19,6 +20,10 @@ function App() {
   let context: WebGL2RenderingContext | null | undefined;
 
   let mat: THREE.MeshBasicMaterial;
+  const gui = new GUI();
+  gui.add({
+    threshold: 10
+  }, 'threshold',0,10 );   // Number Field
 
   const resizeHandler = () => {
     const w = window.innerWidth;
@@ -84,8 +89,14 @@ function App() {
 
     window.addEventListener('resize', resizeHandler);
 
+    gui.onChange(ev => {
+      if(effect.updateThreshold)effect.updateThreshold(ev.value)
+    })
+
     const animate = () => {
-      requestAnimationFrame(animate);
+      setTimeout(() => {
+        requestAnimationFrame(animate);
+      },1000/10)
       camera.position.z = window.innerHeight / 2 / Math.tan(((camera.fov / 2) * Math.PI) / 180.0);
 
       // renderer.render(scene, camera);

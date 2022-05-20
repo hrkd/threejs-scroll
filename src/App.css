@@ -13,15 +13,10 @@
   z-index: 2;
 }
 
-.ascii td span{
+.ascii td span {
   background: white;
   color: #999;
 }
-
-.dark {
-  opacity: 0;
-}
-
 
 canvas {
   position: fixed;
