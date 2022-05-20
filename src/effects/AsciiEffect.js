@@ -24,6 +24,7 @@ class AsciiEffect {
 		const strResolution = 'low';
 
 		let width, height;
+		let threshold = 10;
 
 		const domElement = document.createElement( 'div' );
 		domElement.style.cursor = 'default';
@@ -239,7 +240,11 @@ class AsciiEffect {
 					//fBrightness = Math.floor(fBrightness * 10);
 					//strThisChar = fBrightness;
 
-					let strThisChar = aCharList[ iCharIdx ];
+					let className = "";
+					if (iCharIdx >= threshold - 1) className = 'dark';
+
+					let strThisChar = '<span class="'+className+'">'+ aCharList[ iCharIdx ] + '</span>';
+					// let strThisChar = aCharList[ iCharIdx ];
 
 					if ( strThisChar === undefined || strThisChar == ' ' )
 						strThisChar = '&nbsp;';
