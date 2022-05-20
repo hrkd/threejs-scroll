@@ -1,79 +1,129 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useMemo, useState} from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { isJSDocReturnTag } from 'typescript';
 import * as THREE from 'three';
+import { AsciiEffect } from './effects/AsciiEffect';
+import GUI from 'lil-gui'; 
 
 function App() {
   const ref = useRef<HTMLCanvasElement>(null);
   let renderer: THREE.WebGLRenderer;
+  let effect: AsciiEffect;
   const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000);
   const scene = new THREE.Scene();
   let geo: THREE.PlaneBufferGeometry;
-  let red = new THREE.MeshBasicMaterial({ color: new THREE.Color(0xff0000), wireframe:true });
+  let red = new THREE.MeshBasicMaterial({ color: new THREE.Color(0xff0000) });
   let plane: THREE.Mesh;
+  const loader = new THREE.ImageBitmapLoader();
+  loader.setOptions({ imageOrientation: 'flipY' });
+  let canvas;
+  let context: WebGL2RenderingContext | null | undefined;
+
+  let mat: THREE.MeshBasicMaterial;
+  const gui = new GUI();
+  gui.add({
+    threshold: 10
+  }, 'threshold',0,10 );   // Number Field
 
   const resizeHandler = () => {
-    const w = window.innerWidth
+    const w = window.innerWidth;
     const h = window.innerHeight;
-    geo = new THREE.PlaneBufferGeometry(window.innerWidth , window.innerHeight);
+    geo = new THREE.PlaneBufferGeometry(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(w, h);
+    effect.setSize(w, h);
+
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
-  }
+  };
 
-  const scrollHandler = (ev:Event) => {
+  const scrollHandler = (ev: Event) => {
     camera.position.setY(-window.scrollY);
-  }
+  };
 
   useEffect(() => {
-    geo = new THREE.PlaneBufferGeometry(window.innerWidth , window.innerHeight);
-    plane = new THREE.Mesh(geo, red);
-    scene.add(plane);
+    geo = new THREE.PlaneBufferGeometry(window.innerWidth, window.innerHeight);
 
     window.addEventListener('scroll', scrollHandler);
+
+    loader.load(
+      // resource URL
+      './pexels-michael-morse-7536592.jpg',
+
+      // onLoad callback
+      function (imageBitmap) {
+        const texture = new THREE.CanvasTexture(imageBitmap);
+        mat = new THREE.MeshBasicMaterial({ map: texture });
+        plane = new THREE.Mesh(geo, mat);
+        scene.add(plane);
+      },
+
+      // onProgress callback currently not supported
+      undefined,
+
+      // onError callback
+      function (err) {
+        console.log('An error happened');
+      }
+    );
     return () => {
       window.removeEventListener('resize', resizeHandler);
       window.removeEventListener('scroll', scrollHandler);
-    }
+    };
   }, []);
 
   useEffect(() => {
     if (!ref.current) return;
+    const canvas = ref.current;
 
-    renderer = new THREE.WebGLRenderer({canvas: ref.current})
+    renderer = new THREE.WebGLRenderer({ canvas, preserveDrawingBuffer: true });
+    effect = new AsciiEffect(renderer, '.:-+*=%E@#', { invert: false });
+
     resizeHandler();
-    renderer.setClearColor(new THREE.Color(0x0000FF), 1);
+    renderer.setClearColor(new THREE.Color(0xFFFFFF), 1);
+    const wrapper = document.querySelector('#root');
+
+    //add ascii layer
+    wrapper?.appendChild(effect.domElement);
+    effect.domElement.setAttribute('class', 'ascii');
+
     window.addEventListener('resize', resizeHandler);
 
-    const animate = () => {
-      requestAnimationFrame(animate);
-      camera.position.z = window.innerHeight/2/Math.tan(camera.fov/2 * Math.PI / 180.0);
+    gui.onChange(ev => {
+      if(effect.updateThreshold)effect.updateThreshold(ev.value)
+    })
 
-      renderer.render(scene, camera)
+    const animate = () => {
+      setTimeout(() => {
+        requestAnimationFrame(animate);
+      },1000/10)
+      camera.position.z = window.innerHeight / 2 / Math.tan(((camera.fov / 2) * Math.PI) / 180.0);
+
+      // renderer.render(scene, camera);
+      effect.render(scene, camera);
     };
     animate();
   }, [ref]);
+
   return (
     <>
-      <canvas ref={ref}></canvas>
-    <div className="App" style={{ height: 10000 }}>
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <canvas ref={ref}/>
+      <div className="App" style={{ height: 10000 }}>
+        <header className="App-header">
+          <img src={logo} className="App-logo" alt="logo" />
+          <p>
+            Edit <code>src/App.tsx</code> and save to reload.
+          </p>
+          <a
+            className="App-link"
+            href="https://reactjs.org"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Learn React
+          </a>
+        </header>
+      </div>
     </>
   );
 }
