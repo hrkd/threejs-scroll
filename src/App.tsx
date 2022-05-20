@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useMemo, useState} from 'react';
 import logo from './logo.svg';
 import './App.css';
 import * as THREE from 'three';
-import { AsciiEffect } from 'three/examples/jsm/effects/AsciiEffect';
+import { AsciiEffect } from './effects/AsciiEffect';
 
 function App() {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -72,10 +72,10 @@ function App() {
     const canvas = ref.current;
 
     renderer = new THREE.WebGLRenderer({ canvas, preserveDrawingBuffer: true });
-    effect = new AsciiEffect(renderer, ' .:-+*=%@#', { invert: false });
+    effect = new AsciiEffect(renderer, '.:-+*=%E@#', { invert: false });
 
     resizeHandler();
-    renderer.setClearColor(new THREE.Color(0x000000), 1);
+    renderer.setClearColor(new THREE.Color(0xFFFFFF), 1);
     const wrapper = document.querySelector('#root');
 
     //add ascii layer
