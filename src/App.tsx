@@ -1,8 +1,8 @@
 import React, {useEffect, useRef} from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { isJSDocReturnTag } from 'typescript';
 import * as THREE from 'three';
+import GUI from 'lil-gui'; 
 
 function App() {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -12,6 +12,7 @@ function App() {
   let geo: THREE.PlaneBufferGeometry;
   let red = new THREE.MeshBasicMaterial({ color: new THREE.Color(0xff0000), wireframe:true });
   let plane: THREE.Mesh;
+  const gui = new GUI();
 
   const resizeHandler = () => {
     const w = window.innerWidth
