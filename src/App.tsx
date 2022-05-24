@@ -45,7 +45,7 @@ function App() {
 
     renderer = new THREE.WebGLRenderer({canvas: ref.current})
     resizeHandler();
-    renderer.setClearColor(new THREE.Color(0x0000FF), 1);
+    renderer.setClearColor(new THREE.Color(0xEEEEEE), 1);
     window.addEventListener('resize', resizeHandler);
 
     const animate = () => {
